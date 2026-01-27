@@ -14,6 +14,7 @@ const Layout = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, logout } = useAuth();
   const isOnline = useOnlineStatus();
   
@@ -199,7 +200,133 @@ const Layout = () => {
         </div>
       </aside>
 
-      <main className={`flex-1 transition-all duration-300 pb-20 lg:pb-0 ${isSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64'}`}>
+      <header className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-[#0a0a0a]/80 backdrop-blur-md border-b border-[#2D2D2D] z-50 flex items-center justify-between px-4 transition-all duration-300">
+        <Link to="/" className="flex items-center gap-2 group">
+          <Logo size={32} className="group-hover:scale-110 transition-transform" />
+          <span className="text-lg font-black tracking-tighter">
+            LEARN<span className="text-[#EF4444]">CODE</span>
+          </span>
+        </Link>
+        <div className="flex items-center gap-2">
+          {user && (
+            <button 
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="p-2 text-gray-400 hover:text-white bg-[#111] rounded-lg border border-[#222]"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+          )}
+        </div>
+      </header>
+
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl transition-all duration-300">
+          <div className="flex flex-col h-full overflow-y-auto">
+            <div className="p-6 flex items-center justify-between border-b border-[#222] bg-[#0a0a0a]">
+              <div className="flex items-center gap-2">
+                <Logo size={32} />
+                <span className="font-black tracking-tight">MENU</span>
+              </div>
+              <button 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-2 text-gray-400 hover:text-white bg-[#111] rounded-full border border-[#222]"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <div className="p-6 space-y-6">
+              {user && (
+                <div className="flex items-center gap-4 p-4 rounded-2xl bg-[#0a0a0a] border border-[#222] shadow-2xl">
+                  {user.picture ? (
+                    <img src={user.picture} alt="Profile" className="w-12 h-12 rounded-full border-2 border-[#EF4444] object-cover" />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-[#111] flex items-center justify-center border-2 border-[#EF4444]">
+                      <User className="w-6 h-6 text-[#EF4444]" />
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <h3 className="font-black text-white truncate">{user.name || 'User'}</h3>
+                    <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                  </div>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 gap-3">
+                <Link 
+                  to="/premium" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-r from-[#EF4444]/15 to-transparent border border-[#EF4444]/30 text-[#EF4444] shadow-lg shadow-[#EF4444]/5"
+                >
+                  <Zap className="w-5 h-5 fill-[#EF4444]/20" />
+                  <span className="font-black italic tracking-wide uppercase">Unlock Premium</span>
+                </Link>
+
+                <Link 
+                  to="/settings" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-4 p-4 rounded-xl bg-[#111] border border-[#222] hover:bg-[#161616] transition-colors"
+                >
+                  <Settings className="w-5 h-5 text-gray-400" />
+                  <span className="font-bold">Account Settings</span>
+                </Link>
+
+                {user?.role === 'admin' && (
+                  <Link 
+                    to="/admin" 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center gap-4 p-4 rounded-xl bg-[#111] border border-[#222] text-[#3B82F6] hover:bg-[#161616] transition-colors"
+                  >
+                    <Shield className="w-5 h-5" />
+                    <span className="font-bold">Admin Console</span>
+                  </Link>
+                )}
+
+                <button 
+                  onClick={() => {
+                    handleLogout();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="flex items-center gap-4 p-4 rounded-xl bg-[#111] border border-[#222] text-red-500 hover:bg-red-500/5 transition-colors text-left"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span className="font-bold">Log Out</span>
+                </button>
+              </div>
+
+              <div className="pt-6 border-t border-[#222]">
+                <p className="text-[10px] font-black text-gray-600 uppercase tracking-[0.3em] mb-4">Navigation</p>
+                <div className="grid grid-cols-2 gap-3">
+                  {navItems.map(item => (
+                    <Link 
+                      key={item.path}
+                      to={item.path}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`flex flex-col items-center justify-center p-4 rounded-xl border transition-all ${
+                        location.pathname === item.path 
+                        ? 'bg-[#EF4444]/10 border-[#EF4444]/20 text-[#EF4444]' 
+                        : 'bg-[#111] border-[#222] text-gray-400'
+                      }`}
+                    >
+                      <item.icon className="w-5 h-5 mb-2" />
+                      <span className="text-[10px] font-bold uppercase tracking-widest">{item.label}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-auto p-6 border-t border-[#222] bg-[#0a0a0a] text-center">
+              <p className="text-[10px] text-gray-600 font-bold uppercase tracking-[0.4em]">
+                LearnCode v2.0
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <main className={`flex-1 transition-all duration-300 pb-20 pt-16 lg:pt-0 lg:pb-0 ${isSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64'}`}>
         <Outlet />
       </main>
 
