@@ -47,8 +47,19 @@ console.log(`🔗 Client URL: ${CLIENT_URL}`);
 // --- Security Middleware ---
 app.use(helmet({
   crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
-  crossOriginResourcePolicy: { policy: "cross-origin" }
-})); // Set security headers
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://accounts.google.com"],
+      scriptSrcElem: ["'self'", "'unsafe-inline'", "https://accounts.google.com"],
+      connectSrc: ["'self'", "https://accounts.google.com", "https://www.googleapis.com"],
+      frameSrc: ["'self'", "https://accounts.google.com"],
+      imgSrc: ["'self'", "data:", "https://*"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+    },
+  },
+})); // Set security headers with CSP for Google Login
 
 // Rate Limiting
 const limiter = rateLimit({
