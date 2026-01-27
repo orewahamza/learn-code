@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
+const path = require('path');
 const rateLimit = require('express-rate-limit');
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
@@ -33,7 +34,7 @@ if (error) {
 }
 
 // --- Configuration ---
-const PORT = envVars.PORT;
+const PORT = process.env.PORT || 5000;
 const NODE_ENV = envVars.NODE_ENV;
 const MONGO_URI = envVars.MONGO_URI;
 const CLIENT_URL = envVars.CLIENT_URL;
@@ -70,12 +71,7 @@ const authLimiter = rateLimit({
 app.use('/api/', limiter);
 
 // --- Middleware ---
-app.use(cors({
-  origin: CLIENT_URL,
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'admin-email']
-}));
+app.use(cors()); // Simplified for deployment - allows all origins
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
@@ -100,6 +96,23 @@ mongoose.connect(MONGO_URI)
 
 // Health Check Endpoint
 app.get('/health', (req, res) => res.json({ status: 'ok', timestamp: new Date(), environment: NODE_ENV }));
+
+// Serve static files from the React app build folder
+app.use(express.static(path.join(__dirname, '../build')));
+
+// Root Route
+app.get('/', (req, res) => {
+  // Check if we are in the build directory
+  if (NODE_ENV === 'production') {
+    res.sendFile(path.join(__dirname, '../build', 'index.html'));
+  } else {
+    res.json({ 
+      message: "🚀 learnCode API is running!", 
+      status: "online",
+      documentation: "/health"
+    });
+  }
+});
 
 // --- Helper Functions ---
 const SALT_ROUNDS = 10;
@@ -1295,6 +1308,15 @@ app.delete('/api/admin/user/:email', verifyToken, isAdmin, async (req, res) => {
 // =====================================
 // START SERVER
 // =====================================
+
+// Catch-all route for React Router (must be the LAST route)
+app.get('*', (req, res) => {
+  if (NODE_ENV === 'production' && !req.path.startsWith('/api')) {
+    res.sendFile(path.join(__dirname, '../build', 'index.html'));
+  } else if (!req.path.startsWith('/api')) {
+      res.status(404).json({ message: "Route not found" });
+  }
+});
 
 app.listen(PORT, () => {
   const apiUrl = NODE_ENV === 'production' 
