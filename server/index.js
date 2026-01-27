@@ -1310,7 +1310,8 @@ app.delete('/api/admin/user/:email', verifyToken, isAdmin, async (req, res) => {
 // =====================================
 
 // Catch-all route for React Router (must be the LAST route)
-app.get('/*', (req, res) => {
+// Catch-all route for React Router (must be the LAST route)
+app.get('*splat', (req, res) => {
   if (NODE_ENV === 'production' && !req.path.startsWith('/api')) {
     res.sendFile(path.join(__dirname, '../build', 'index.html'));
   } else if (!req.path.startsWith('/api')) {
