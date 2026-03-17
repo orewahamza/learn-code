@@ -52,7 +52,7 @@ const Layout = () => {
     <div className="min-h-screen bg-black text-white flex overflow-x-hidden">
       {/* Sidebar - Desktop */}
       <aside 
-        className={`hidden lg:flex lg:flex-col bg-[#0a0a0a] border-r border-[#2D2D2D] fixed h-screen z-40 transition-all duration-300 ease-in-out select-none ${
+        className={`hidden lg:flex lg:flex-col bg-[#0a0a0a] border-r border-[#2D2D2D] sticky top-0 h-screen z-40 transition-[width] duration-300 ease-in-out select-none flex-shrink-0 will-change-[width] ${
           isSidebarCollapsed ? 'w-20' : 'w-64'
         }`}
         onMouseEnter={() => setIsSidebarCollapsed(false)}
@@ -61,7 +61,7 @@ const Layout = () => {
         <div className="p-5 border-b border-[#2D2D2D] flex items-center justify-center overflow-hidden h-[81px]">
           <Link to="/" className="flex items-center gap-3 min-w-max group">
             <Logo size={40} className="group-hover:scale-110 transition-transform" />
-            <span className={`text-xl font-black transition-all duration-300 ${isSidebarCollapsed ? 'opacity-0 translate-x-4 invisible w-0' : 'opacity-100 translate-x-0 visible'}`}>
+            <span className={`text-xl font-black transition-all duration-300 ${isSidebarCollapsed ? 'opacity-0 translate-x-4 w-0 overflow-hidden' : 'opacity-100 translate-x-0'}`}>
               LEARN<span className="text-[#EF4444]">CODE</span>
             </span>
           </Link>
@@ -82,7 +82,7 @@ const Layout = () => {
                 <div className="w-12 h-12 flex items-center justify-center flex-shrink-0">
                    <item.icon className="w-5 h-5 transition-transform group-hover:scale-110" />
                 </div>
-                <span className={`font-bold text-sm whitespace-nowrap transition-all duration-300 ${isSidebarCollapsed ? 'opacity-0 translate-x-4 invisible w-0' : 'opacity-100 translate-x-0 visible'}`}>
+                <span className={`font-bold text-sm whitespace-nowrap transition-all duration-300 ${isSidebarCollapsed ? 'opacity-0 translate-x-4 w-0 overflow-hidden' : 'opacity-100 translate-x-0'}`}>
                   {item.label}
                 </span>
               </Link>
@@ -111,7 +111,7 @@ const Layout = () => {
                                 <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
                             </div>
                             
-                            <div className={`flex-1 min-w-0 transition-all duration-300 ${isSidebarCollapsed ? 'opacity-0 invisible w-0' : 'opacity-100 visible'}`}>
+                            <div className={`flex-1 min-w-0 transition-all duration-300 ${isSidebarCollapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'}`}>
                                 <p className="text-xs font-black text-gray-300 truncate tracking-tight">{info.title}</p>
                                 <div className="h-1 w-full bg-[#1e1e1e] rounded-full overflow-hidden mt-1.5 border border-[#222]">
                                     <div 
@@ -150,7 +150,7 @@ const Layout = () => {
                      <item.icon className={`w-5 h-5 ${item.highlight && location.pathname !== item.path ? 'text-[#EF4444]' : ''}`} />
                    )}
                 </div>
-              <span className={`font-bold text-sm whitespace-nowrap transition-all duration-300 ${isSidebarCollapsed ? 'opacity-0 translate-x-4 invisible w-0' : 'opacity-100 translate-x-0 visible'}`}>
+              <span className={`font-bold text-sm whitespace-nowrap transition-all duration-300 ${isSidebarCollapsed ? 'opacity-0 translate-x-4 w-0 overflow-hidden' : 'opacity-100 translate-x-0'}`}>
                 {item.label}
               </span>
             </Link>
@@ -163,7 +163,7 @@ const Layout = () => {
                <div className="w-12 h-12 flex items-center justify-center flex-shrink-0">
                   <LogOut className="w-5 h-5" />
                </div>
-               <span className={`font-bold text-sm text-left transition-all duration-300 ${isSidebarCollapsed ? 'opacity-0 translate-x-4 invisible w-0' : 'opacity-100 translate-x-0 visible'}`}>
+               <span className={`font-bold text-sm text-left transition-all duration-300 ${isSidebarCollapsed ? 'opacity-0 translate-x-4 w-0 overflow-hidden' : 'opacity-100 translate-x-0'}`}>
                  Logout
                </span>
             </button>
@@ -178,7 +178,7 @@ const Layout = () => {
                 <div className="w-11 h-11 flex items-center justify-center flex-shrink-0">
                    <LogIn className="w-5 h-5" />
                 </div>
-                <span className={`font-bold text-sm whitespace-nowrap transition-all duration-300 ${isSidebarCollapsed ? 'opacity-0 translate-x-4 invisible' : 'opacity-100 translate-x-0 visible'}`}>
+                <span className={`font-bold text-sm whitespace-nowrap transition-all duration-300 ${isSidebarCollapsed ? 'opacity-0 translate-x-4 w-0 overflow-hidden' : 'opacity-100 translate-x-0'}`}>
                   Login
                 </span>
               </Link>
@@ -191,7 +191,7 @@ const Layout = () => {
                 <div className="w-11 h-11 flex items-center justify-center flex-shrink-0">
                    <Target className="w-5 h-5" />
                 </div>
-                <span className={`font-bold text-sm whitespace-nowrap transition-all duration-300 ${isSidebarCollapsed ? 'opacity-0 translate-x-4 invisible' : 'opacity-100 translate-x-0 visible'}`}>
+                <span className={`font-bold text-sm whitespace-nowrap transition-all duration-300 ${isSidebarCollapsed ? 'opacity-0 translate-x-4 w-0 overflow-hidden' : 'opacity-100 translate-x-0'}`}>
                   Sign Up
                 </span>
               </Link>
@@ -326,7 +326,7 @@ const Layout = () => {
         </div>
       )}
 
-      <main className={`flex-1 transition-all duration-300 pb-20 pt-16 lg:pt-0 lg:pb-0 ${isSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64'}`}>
+      <main className={`flex-1 transition-all duration-300 pb-20 pt-16 lg:pt-0 lg:pb-0`}>
         <Outlet />
       </main>
 
