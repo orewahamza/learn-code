@@ -52,7 +52,7 @@ const Layout = () => {
     <div className="min-h-screen bg-black text-white flex overflow-x-hidden">
       {/* Sidebar - Desktop */}
       <aside 
-        className={`hidden lg:flex lg:flex-col bg-[#0a0a0a] border-r border-[#2D2D2D] sticky top-0 h-screen z-40 transition-[width] duration-300 ease-in-out select-none flex-shrink-0 will-change-[width] ${
+        className={`hidden lg:flex lg:flex-col bg-[#0a0a0a]/80 backdrop-blur-xl border border-[#2D2D2D] sticky top-6 h-[calc(100vh-3rem)] z-40 transition-[width] duration-300 ease-in-out select-none flex-shrink-0 will-change-[width] ml-6 my-6 rounded-[2.5rem] shadow-2xl shadow-black/50 ${
           isSidebarCollapsed ? 'w-20' : 'w-64'
         }`}
         onMouseEnter={() => setIsSidebarCollapsed(false)}
