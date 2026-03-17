@@ -53,9 +53,9 @@ app.use(helmet({
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'", "'unsafe-inline'", "https://accounts.google.com"],
       scriptSrcElem: ["'self'", "'unsafe-inline'", "https://accounts.google.com"],
-      connectSrc: ["'self'", "https://accounts.google.com", "https://www.googleapis.com"],
+      connectSrc: ["'self'", "http://localhost:5000", "http://127.0.0.1:5000", "https://accounts.google.com", "https://www.googleapis.com"],
       frameSrc: ["'self'", "https://accounts.google.com"],
-      imgSrc: ["'self'", "data:", "https://*"],
+      imgSrc: ["'self'", "data:", "https://*", "blob:"],
       styleSrc: ["'self'", "'unsafe-inline'"],
     },
   },
@@ -78,13 +78,27 @@ const authLimiter = rateLimit({
   skipSuccessfulRequests: true, // Don't count successful logins
 });
 
-// Apply rate limiting to API routes only
-app.use('/api/', limiter);
+const allowedOrigins = [CLIENT_URL, 'http://localhost:3000', 'http://127.0.0.1:3000'];
 
-// --- Middleware ---
-app.use(cors()); // Simplified for deployment - allows all origins
+app.use(cors({
+  origin: function (origin, callback) {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1 && NODE_ENV !== 'production') {
+      // Allow any origin in dev if origin not in list (safer for debug)
+      return callback(null, true);
+    }
+    return callback(null, true); // Simplified dev fallback: allow all
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
+
+// Apply rate limiting to API routes only
+app.use('/api/', limiter);
 
 // Normalize email middleware
 app.use((req, res, next) => {

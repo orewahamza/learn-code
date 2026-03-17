@@ -37,10 +37,6 @@ const Settings = () => {
     promotions: false,
   });
 
-  const [preferences, setPreferences] = useState({
-    language: user?.settings?.language || 'en',
-    timezone: 'auto',
-  });
 
   // Handle profile picture change
   const handlePictureChange = (e) => {
@@ -141,23 +137,6 @@ const Settings = () => {
     setIsLoading(false);
   };
 
-  // Handle preferences update
-  const handlePreferencesUpdate = async () => {
-    setIsLoading(true);
-    try {
-      await updateUser({ 
-        settings: { 
-          ...user.settings, 
-          language: preferences.language 
-        } 
-      });
-      showSuccess('Preferences saved!');
-      setActiveSection(null);
-    } catch (err) {
-      setError('Failed to update preferences');
-    }
-    setIsLoading(false);
-  };
 
   const showSuccess = (message) => {
     setSuccessMessage(message);
@@ -183,16 +162,10 @@ const Settings = () => {
       title: 'Privacy & Security', 
       description: 'Update password and privacy settings' 
     },
-    { 
-      id: 'preferences', 
-      icon: Globe, 
-      title: 'Language & Region', 
-      description: 'Set your preferred language and timezone' 
-    },
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white px-6 py-12">
+    <div className="min-h-screen bg-black text-white px-4 sm:px-6 py-8 sm:py-12">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-black mb-2">Settings</h1>
         <p className="text-[#9CA3AF] mb-8">Manage your account preferences</p>
@@ -218,8 +191,8 @@ const Settings = () => {
 
         {/* Profile Card */}
         {user && (
-          <div className="bg-[#1a1a1a] rounded-2xl border border-[#2D2D2D] p-6 mb-8">
-            <div className="flex items-center gap-6">
+          <div className="bg-[#1a1a1a] rounded-2xl border border-[#2D2D2D] p-5 sm:p-6 mb-8">
+            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-center sm:text-left">
               <div className="relative group">
                 {user.picture ? (
                   <img 
@@ -248,14 +221,14 @@ const Settings = () => {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-bold">{user.name}</h2>
-                <p className="text-[#9CA3AF]">{user.email}</p>
-                <div className="flex items-center gap-4 mt-2">
+                <p className="text-[#9CA3AF] text-sm sm:text-base">{user.email}</p>
+                <div className="flex flex-wrap justify-center sm:justify-start items-center gap-2 sm:gap-4 mt-2">
                   <span className="text-sm text-[#6B7280]">{user.xp || 0} XP</span>
-                  <span className="text-sm text-[#6B7280]">•</span>
+                  <span className="text-sm text-[#6B7280] hidden sm:inline">•</span>
                   <span className="text-sm text-[#6B7280]">{user.streak || 0} day streak</span>
                   {user.isPremium && (
                     <>
-                      <span className="text-sm text-[#6B7280]">•</span>
+                      <span className="text-sm text-[#6B7280] hidden sm:inline">•</span>
                       <span className="text-xs bg-[#EF4444] px-2 py-0.5 rounded font-bold">PRO</span>
                     </>
                   )}
@@ -263,7 +236,7 @@ const Settings = () => {
               </div>
               <button 
                 onClick={() => setActiveSection(activeSection === 'account' ? null : 'account')}
-                className="bg-[#EF4444] hover:bg-[#DC2626] text-white font-bold px-6 py-2 rounded-lg transition-all shadow-lg shadow-[#EF4444]/25"
+                className="w-full sm:w-auto bg-[#EF4444] hover:bg-[#DC2626] text-white font-bold px-6 py-2.5 rounded-lg transition-all shadow-lg shadow-[#EF4444]/25"
               >
                 Customize
               </button>
@@ -286,20 +259,20 @@ const Settings = () => {
               >
                 {/* Header */}
                 <div 
-                  className="p-6 cursor-pointer"
+                  className="p-4 sm:p-6 cursor-pointer"
                   onClick={() => setActiveSection(isExpanded ? null : section.id)}
                 >
-                  <div className="flex items-center gap-4">
-                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center flex-shrink-0 ${
                       isExpanded ? 'bg-[#EF4444]' : 'bg-[#0d0d0d]'
                     }`}>
-                      <Icon className={`w-6 h-6 ${isExpanded ? 'text-white' : 'text-[#EF4444]'}`} />
+                      <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${isExpanded ? 'text-white' : 'text-[#EF4444]'}`} />
                     </div>
-                    <div className="flex-1">
-                      <h3 className="font-bold mb-1">{section.title}</h3>
-                      <p className="text-sm text-[#9CA3AF]">{section.description}</p>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold mb-0.5 sm:mb-1 truncate">{section.title}</h3>
+                      <p className="text-xs sm:text-sm text-[#9CA3AF] line-clamp-1 sm:line-clamp-none">{section.description}</p>
                     </div>
-                    <div className={`w-8 h-8 rounded-full border border-[#2D2D2D] flex items-center justify-center transition-transform ${isExpanded ? 'rotate-180' : ''}`}>
+                    <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-[#2D2D2D] flex items-center justify-center transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`}>
                       <svg className="w-4 h-4 text-[#9CA3AF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
@@ -309,7 +282,7 @@ const Settings = () => {
 
                 {/* Expanded Content */}
                 {isExpanded && (
-                  <div className="px-6 pb-6 border-t border-[#2D2D2D]">
+                  <div className="px-4 sm:px-6 pb-4 sm:pb-6 border-t border-[#2D2D2D]">
                     {/* Account Section */}
                     {section.id === 'account' && (
                       <div className="pt-6 space-y-8 animate-in slide-in-from-top-4 duration-300">
@@ -378,11 +351,11 @@ const Settings = () => {
                             />
                             <p className="text-xs text-[#6B7280] mt-1">Email cannot be changed</p>
                           </div>
-                          <div className="flex gap-3 pt-2">
+                          <div className="flex flex-col sm:flex-row gap-3 pt-2">
                             <button 
                               type="submit"
                               disabled={isLoading}
-                              className="bg-[#EF4444] hover:bg-[#DC2626] text-white font-bold px-6 py-2.5 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50"
+                              className="w-full sm:w-auto bg-[#EF4444] hover:bg-[#DC2626] text-white font-bold px-6 py-2.5 rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                             >
                               {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                               Save Changes
@@ -390,7 +363,7 @@ const Settings = () => {
                             <button 
                               type="button"
                               onClick={() => setActiveSection(null)}
-                              className="bg-[#0d0d0d] border border-[#2D2D2D] text-white font-semibold px-6 py-2.5 rounded-lg transition-all hover:border-[#333333]"
+                              className="w-full sm:w-auto bg-[#0d0d0d] border border-[#2D2D2D] text-white font-semibold px-6 py-2.5 rounded-lg transition-all hover:border-[#333333]"
                             >
                               Cancel
                             </button>
@@ -422,12 +395,12 @@ const Settings = () => {
                             </button>
                           </div>
                         ))}
-                        <div className="flex gap-3 pt-2">
+                        <div className="flex flex-col sm:flex-row gap-3 pt-2">
                           <button 
                             type="button"
                             onClick={handleNotificationUpdate}
                             disabled={isLoading}
-                            className="bg-[#EF4444] hover:bg-[#DC2626] text-white font-bold px-6 py-2.5 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50"
+                            className="w-full sm:w-auto bg-[#EF4444] hover:bg-[#DC2626] text-white font-bold px-6 py-2.5 rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                           >
                             {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                             Save Preferences
@@ -510,11 +483,11 @@ const Settings = () => {
                             </button>
                           </div>
                         </div>
-                        <div className="flex gap-3 pt-2">
+                        <div className="flex flex-col sm:flex-row gap-3 pt-2">
                           <button 
                             type="submit"
                             disabled={isLoading}
-                            className="bg-[#EF4444] hover:bg-[#DC2626] text-white font-bold px-6 py-2.5 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50"
+                            className="w-full sm:w-auto bg-[#EF4444] hover:bg-[#DC2626] text-white font-bold px-6 py-2.5 rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                           >
                             {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
                             Update Password
@@ -523,50 +496,6 @@ const Settings = () => {
                       </form>
                     )}
 
-                    {/* Preferences Section */}
-                    {section.id === 'preferences' && (
-                      <div className="pt-6 space-y-4">
-                        <div>
-                          <label className="block text-sm font-semibold text-[#9CA3AF] mb-2">Language</label>
-                          <select 
-                            value={preferences.language}
-                            onChange={(e) => setPreferences({...preferences, language: e.target.value})}
-                            className="w-full bg-[#0d0d0d] border border-[#2D2D2D] text-white rounded-xl py-3 px-4 focus:outline-none focus:border-[#EF4444]"
-                          >
-                            <option value="en">English</option>
-                            <option value="es">Español</option>
-                            <option value="fr">Français</option>
-                            <option value="de">Deutsch</option>
-                            <option value="ar">العربية</option>
-                          </select>
-                        </div>
-                        <div>
-                          <label className="block text-sm font-semibold text-[#9CA3AF] mb-2">Timezone</label>
-                          <select 
-                            value={preferences.timezone}
-                            onChange={(e) => setPreferences({...preferences, timezone: e.target.value})}
-                            className="w-full bg-[#0d0d0d] border border-[#2D2D2D] text-white rounded-xl py-3 px-4 focus:outline-none focus:border-[#EF4444]"
-                          >
-                            <option value="auto">Auto-detect</option>
-                            <option value="UTC">UTC</option>
-                            <option value="EST">Eastern Time (EST)</option>
-                            <option value="PST">Pacific Time (PST)</option>
-                            <option value="GMT">GMT</option>
-                          </select>
-                        </div>
-                        <div className="flex gap-3 pt-2">
-                          <button 
-                            type="button"
-                            onClick={handlePreferencesUpdate}
-                            disabled={isLoading}
-                            className="bg-[#EF4444] hover:bg-[#DC2626] text-white font-bold px-6 py-2.5 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50"
-                          >
-                            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                            Save Preferences
-                          </button>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 )}
               </div>
@@ -577,13 +506,13 @@ const Settings = () => {
         {/* Danger Zone */}
         <div className="mt-8 pt-8 border-t border-[#2D2D2D]">
           <h3 className="text-lg font-bold text-[#EF4444] mb-4">Danger Zone</h3>
-          <div className="bg-[#EF4444]/5 rounded-xl border border-[#EF4444]/20 p-6">
-            <div className="flex items-center justify-between">
+          <div className="bg-[#EF4444]/5 rounded-xl border border-[#EF4444]/20 p-5 sm:p-6 text-center sm:text-left">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
                 <p className="font-semibold">Delete Account</p>
                 <p className="text-sm text-[#9CA3AF]">Permanently delete your account and all data</p>
               </div>
-              <button className="bg-transparent border border-[#EF4444] text-[#EF4444] font-semibold px-6 py-2 rounded-lg hover:bg-[#EF4444] hover:text-white transition-all">
+              <button className="w-full sm:w-auto bg-transparent border border-[#EF4444] text-[#EF4444] font-semibold px-6 py-2.5 rounded-lg hover:bg-[#EF4444] hover:text-white transition-all">
                 Delete Account
               </button>
             </div>
